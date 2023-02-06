@@ -12,6 +12,8 @@ find_package(tl_expected REQUIRED)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
     add_compile_options(-Werror -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast)
+else()
+  add_definitions(-D_USE_MATH_DEFINES)
 endif()
 
 # Default to shared libraries to work around the Debian ecosystem's inability to specify -DBUILD_SHARED_LIBS=ON at configuration :(
@@ -21,6 +23,7 @@ add_library(rsl
     src/parameter_validators.cpp
     src/random.cpp
 )
+set_target_properties(rsl PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 add_library(rsl::rsl ALIAS rsl)
 target_compile_features(rsl PUBLIC cxx_std_17)
 target_include_directories(rsl PUBLIC
@@ -35,7 +38,7 @@ target_link_libraries(rsl PUBLIC
     tl_expected::tl_expected
 )
 
-add_subdirectory(docs)
+# add_subdirectory(docs)
 
 if(BUILD_TESTING)
     add_subdirectory(tests)
